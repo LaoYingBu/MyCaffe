@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Windows Caffe
 
 **This is an experimental, Microsoft-led branch by Pavle Josipovic (@pavlejosipovic). It is a work-in-progress.**
@@ -63,3 +64,6 @@ Now, you should be able to build `.\windows\Caffe.sln`
 ## Further Details
 
 Refer to the BVLC/caffe master branch README for all other details such as license, citation, and so on.
+=======
+# MyCaffe
+>>>>>>> 78a003a7a94ab54c5fb24900f36158841062033e
