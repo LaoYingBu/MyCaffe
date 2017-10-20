@@ -11,6 +11,19 @@
 
 namespace caffe {
 
+	template<typename Dtype>
+	void TransformerLayer<Dtype>::Forward_gpu(const vector<Blob<Dtype>*>& bottom,
+		const vector<Blob<Dtype>*>& top){
+		Forward_cpu(bottom, top);
+	}
+
+	template<typename Dtype>
+	void TransformerLayer<Dtype>::Backward_gpu(const vector<Blob<Dtype>*>& top,
+		const vector<bool>& propagate_down,
+		const vector<Blob<Dtype>*>& bottom){
+		Backward_cpu(top, propagate_down, bottom);
+	}
+	/*
   template <typename Dtype>
   __global__ void FixCoordinate(const int n, Dtype* in_out,
     Dtype min_value, Dtype max_value) {
@@ -44,47 +57,7 @@ namespace caffe {
     }
   }
   
-  template <typename Dtype>
-  __global__ void TransformerBackward(const int num, const int channels,
-	  const int spatial_dim, const int height, const int width,
-	  const Dtype* data, const Dtype* CoordinateSource_data, const Dtype* top_diff,
-	  Dtype* data_diff, Dtype* CoordinateSource_diff);
-  /*
-  template <typename Dtype>
-  __global__ void TransformerBackward(const int num, const int channels,
-    const int spatial_dim, const int height, const int width,
-    const Dtype* data, const Dtype* CoordinateSource_data, const Dtype* top_diff,
-    Dtype* data_diff, Dtype* CoordinateSource_diff) {
-    CUDA_KERNEL_LOOP(index, num * spatial_dim) {
-      int n = index / spatial_dim;
-      int s = index % spatial_dim;
-      int h = s / width;
-      int w = s % width;
-	  Dtype x = CoordinateSource_data[n * 2 * spatial_dim + h * width + w] * height / 2 + (Dtype)height / 2;
-	  Dtype y = CoordinateSource_data[n * 2 * spatial_dim + spatial_dim + h * width + w] * width / 2 + (Dtype)width / 2;
-      if (x >= 0 && x <= height - 1 && y >= 0 && y <= width - 1) {
-        for (int c = 0; c < channels; c++) {
-          for (int xx = floor(x); xx <= ceil(x); xx++) {
-            for (int yy = floor(y); yy <= ceil(y); yy++) {
-              atomicAdd(&data_diff[(((n * channels + c) * height + xx) * width) + yy], top_diff[(((n * channels + c) * height + h) * width) + w] * (1 - abs(x - xx)) * (1 - abs(y - yy)));
-              //printf("(%d,%d,%d,%d)(%f,%f)(%d,%d)(%f,%f)\n", n, c, h, w, x, y, xx, yy, data_diff[(((n * channels + c) * height + xx) * width) + yy], top_diff[(((n * channels + c) * height + h) * width) + w]);
-			  if ((xx - x)>Dtype(0))
-				  CoordinateSource_diff[n * 2 * spatial_dim + h * width + w] += top_diff[(((n * channels + c) * height + h) * width) + w] * data[(((n * channels + c) * height + xx) * width) + yy] * (1 - abs(y - yy)) * (Dtype)height / 2;
-              else
-				  CoordinateSource_diff[n * 2 * spatial_dim + h * width + w] -= top_diff[(((n * channels + c) * height + h) * width) + w] * data[(((n * channels + c) * height + xx) * width) + yy] * (1 - abs(y - yy)) * (Dtype)height / 2;
-			  if ((yy - y) > Dtype(0))
-				  CoordinateSource_diff[n * 2 * spatial_dim + spatial_dim + h * width + w] += top_diff[(((n * channels + c) * height + h) * width) + w] * data[(((n * channels + c) * height + xx) * width) + yy] * (1 - abs(x - xx)) * (Dtype)width / 2;
-              else
-				  CoordinateSource_diff[n * 2 * spatial_dim + spatial_dim + h * width + w] -= top_diff[(((n * channels + c) * height + h) * width) + w] * data[(((n * channels + c) * height + xx) * width) + yy] * (1 - abs(x - xx)) * (Dtype)width / 2;
-            }
-          }
-        }
-      }
-    }
-  }
-  */
-  
-  
+    
     template <>
   __global__ void TransformerBackward<float>(const int num, const int channels,
     const int spatial_dim, const int height, const int width,
@@ -218,7 +191,7 @@ namespace caffe {
         Dtype(1), CoordinateSource_diff + n * 2 * spatial_dim, CoordinateTarget_data, Dtype(0), theta_diff + n * 6);
     }
   }
-
+  */
   INSTANTIATE_LAYER_GPU_FUNCS(TransformerLayer);
 
 
