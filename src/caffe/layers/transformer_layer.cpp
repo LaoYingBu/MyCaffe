@@ -31,7 +31,7 @@ namespace caffe {
     CoordinateSource.Reshape(CoordinateSource_shape);
   }
 
-  template <typename Dtype>
+  template <typename Dtype>s
   void TransformerLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
     const vector<Blob<Dtype>*>& top) {
     const Dtype* bottom_data = bottom[0]->cpu_data();
